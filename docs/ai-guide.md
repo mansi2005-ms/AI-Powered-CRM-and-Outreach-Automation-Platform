@@ -282,3 +282,18 @@ parse_experience("2-4 years of experience")
 
 Tests: `pytest ai/evals/test_experience_parser.py` (40 rules-only phrases plus mock-client AI tests).
 
+
+---
+
+## 8. Fuzzy Company Name Matcher (AI-07)
+
+File: `ai/extraction/company_matcher.py`
+
+`calculate_similarity(company_a, company_b)` returns `SimilarityResult(score, explanation)`. The score is between 0.0 and 1.0.
+
+- **Normalisation:** lowercase, punctuation and accents ignored, `&` handled, legal suffixes (`Pvt Ltd`, `Inc`, `LLC`) removed.
+- **Abbreviation match:** `TCS` matches `Tata Consultancy Services`.
+- **Token overlap:** shared words, with tolerance for small typos. Generic words such as `Technologies` count less.
+- **Look-alike guard:** names that share a root but have different distinguishing words (`Acme Healthcare` vs `Acme Logistics`) score low.
+- **Known limitation:** the abbreviation match is a heuristic. Unrelated companies whose initials happen to match can be proposed, so every candidate must be reviewed by a human.
+- `is_possible_duplicate(a, b)` returns True at 0.75 or above. It only proposes candidates; it never merges records. A human decides.
