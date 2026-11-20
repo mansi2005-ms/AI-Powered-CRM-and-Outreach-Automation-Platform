@@ -404,3 +404,23 @@ Colors, score bands, and radii are defined in `src/styles/tokens.css`:
 - The **Confirm & Deduct Credits** button is disabled, with a clear `role="alert"` reason, when the estimated cost exceeds the remaining daily or monthly budget, when no records are selected, or when the provider is unsupported. The same guard is repeated inside the click handler.
 - The component makes no API calls itself. The parent should start enrichment only from `onConfirm`; Escape, the X button, the backdrop and Cancel only call `onClose`.
 - Props: `isOpen`, `onClose`, `onConfirm`, `provider`, `selectedRecords` or `selectedCount`, `estimatedCredits`, `remainingDailyCredits`, `remainingMonthlyCredits`.
+
+### FE-31: Admin Source Registry & Budget Configuration
+- **Component**: `frontend/src/pages/Admin/Sources.jsx` (tests in `frontend/src/pages/Admin/Sources.test.jsx`).
+- **Route**: `/admin/sources` (with admin navigation card at `/admin`).
+- **Authorization**: Protected by `can(role, 'manage_sources_budgets')` (Admin role required). Unauthenticated users redirect to `/login`; unauthorized non-admins redirect to `/pipeline`.
+- **Scraper Source Registry**:
+  - Displays the canonical 8 approved sources from `database/seeds/001_demo.sql` (`internshala`, `naukri`, `apna`, `workindia`, `shine`, `hackathons`, `college_tpo`, `startups`).
+  - Read-only health status badges (`healthy`, `quarantined`, `disabled`).
+  - Interactive toggle switches controlling `isEnabled`. Clicking a toggle opens a confirmation modal comparing Old Value $\rightarrow$ New Value before applying.
+  - If a source's status is `disabled` or `quarantined`, enabling it displays an explicit warning note that it will not run until healthy.
+  - Quick filter buttons: **All**, **Enabled**, **Disabled** with registry-wide count badges (`7 Active`, `1 Disabled`).
+- **Enrichment & Outreach Budget Configuration**:
+  - Provisional monthly provider credit allocations: ContactOut (500 credits) and Snov.io (500 credits), inferred from the global 1,000 credit monthly budget.
+  - Daily outreach send limit defaults to 100 emails/day.
+  - Strict integer validation: rejects negative numbers, decimals, non-numeric strings, and empty inputs. Explicitly permits zero (`0`).
+  - Clicking **Review & Save Budget Changes** captures an immutable configuration snapshot and presents a diff table comparing Old Value $\rightarrow$ New Value for only modified fields before applying.
+- **Mock API Architecture**:
+  - Because `contracts/openapi.yaml` currently does not define configuration endpoints, an in-file mock API layer (`fetchSources`, `updateSourceToggle`, `fetchBudgetSettings`, `updateBudgetSettings`) is provided inside `Sources.jsx`.
+  - Respects `VITE_USE_MOCKS`. Never makes calls to fictitious or uncontracted backend endpoints.
+  - Explicit notices inform users that changes modify in-memory session state only and reset upon page reload.

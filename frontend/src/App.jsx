@@ -8,6 +8,8 @@ import EnrichmentQueuePage from './pages/EnrichmentQueue/index'
 import KitchenSinkPage from './pages/_Kitchen/index'
 import ApprovalPage from './pages/CampaignManager/Approval'
 import History from './pages/EnrichmentQueue/History'
+import SourcesPage from './pages/Admin/Sources'
+import { can } from './utils/roles'
 
 function PlaceholderPage({ title, description, roleRequirement }) {
   return (
@@ -40,7 +42,7 @@ function MainLayout({ user, onLogout, children }) {
 
   return (
     <div style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden' }}>
-      <Sidebar userRole={user?.role || 'admin'} />
+      <Sidebar userRole={user?.role || null} />
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0, overflowY: 'auto' }}>
         <Header user={user} onLogout={onLogout} />
         <main style={{ flex: 1 }}>{children}</main>
@@ -205,11 +207,59 @@ export default function App() {
             path="/admin"
             element={
               currentUser ? (
-                <PlaceholderPage
-                  title="Admin Settings & Budgets (FE-30, FE-31)"
-                  description="Configure users, role assignments, provider credit budgets, and scraper registry."
-                  roleRequirement="admin"
-                />
+                can(currentUser.role, 'manage_users') || can(currentUser.role, 'manage_sources_budgets') ? (
+                  <div style={{ padding: '32px' }}>
+                    <div style={{ backgroundColor: 'var(--color-bg-surface)', padding: '32px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)' }}>
+                      <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '8px' }}>Admin Settings & Budgets (FE-30, FE-31)</h2>
+                      <p style={{ color: 'var(--color-text-muted)', marginBottom: '16px' }}>Configure users, role assignments, provider credit budgets, and scraper registry.</p>
+                      <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                        <a href="/admin/sources" style={{ display: 'inline-flex', alignItems: 'center', padding: '8px 16px', backgroundColor: 'var(--color-primary)', color: '#ffffff', borderRadius: 'var(--radius-md)', fontWeight: 600, fontSize: '13px', textDecoration: 'none' }}>
+                          FE-31: Source Registry &amp; Budget Configuration &rarr;
+                        </a>
+                        <a href="/admin/users" style={{ display: 'inline-flex', alignItems: 'center', padding: '8px 16px', backgroundColor: 'var(--color-bg-alt, #f1f5f9)', color: 'var(--color-text-main)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', fontWeight: 500, fontSize: '13px', textDecoration: 'none' }}>
+                          FE-30: User &amp; Role Management &rarr;
+                        </a>
+                      </div>
+                      <div style={{ fontSize: '13px', color: 'var(--color-text-light)' }}>
+                        Requires role: <code>admin</code>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Navigate to="/pipeline" replace />
+                )
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/sources"
+            element={
+              currentUser ? (
+                can(currentUser.role, 'manage_sources_budgets') ? (
+                  <SourcesPage />
+                ) : (
+                  <Navigate to="/pipeline" replace />
+                )
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              currentUser ? (
+                can(currentUser.role, 'manage_users') ? (
+                  <PlaceholderPage
+                    title="Admin User Management (FE-30)"
+                    description="Manage team member accounts, role assignments, and access status."
+                    roleRequirement="admin"
+                  />
+                ) : (
+                  <Navigate to="/pipeline" replace />
+                )
               ) : (
                 <Navigate to="/login" replace />
               )
