@@ -321,3 +321,77 @@ summary = client.usage_summary()
 ```
 
 Tests: `GEMINI_MOCK_MODE=true pytest -v ai/evals/test_usage.py` (17 passed, as reported for this task).
+
+
+---
+
+## 10. n8n Payload Fix Suggester (AI-18)
+
+File: `ai/diagnosis/payload_fixer.py`
+
+The `suggest_payload_fix()` function analyzes failed JSON payloads and error messages using Gemini Flash. It suggests safe payload corrections or retry parameters without executing any changes.
+
+### Features
+
+- Supports generic JSON payloads, not just scraper data.
+- Identifies incorrect data types and nested field errors.
+- Suggests safe conversions, such as `"20"` to `20`.
+- Reports missing or uncertain values in `needs_human_input`.
+- Never invents missing emails, IDs, URLs, or other unknown values.
+- Validates retry parameters and limits suggested batch sizes to 200.
+- Blocks retry suggestions for `send_timeout`, `provider_rejection`, and `permanent_provider_rejection`.
+- Redacts sensitive information before sending data to Gemini.
+- Returns a safe fallback if Gemini fails or times out.
+- Never modifies the original payload or executes retries.
+
+### Usage
+
+```python
+from ai.diagnosis.payload_fixer import suggest_payload_fix
+
+payload = {"age": "20"}
+
+result = suggest_payload_fix(
+    payload,
+    "Expected integer for field age",
+    category="invalid_input",
+)
+
+print(result)
+```
+
+The function returns a dictionary containing:
+
+| Field | Description |
+|---|---|
+| `summary` | Explanation of the payload issue |
+| `corrected_payload` | Proposed corrected JSON, or `None` |
+| `changes` | Accepted field-level changes with `path`, `issue`, and `new_value` |
+| `needs_human_input` | Fields or issues requiring manual review |
+| `retry_parameters` | Validated retry suggestions, or `None` |
+
+### Safety and Limitations
+
+Only supported, value-preserving type conversions are applied to the proposed payload. Missing fields and uncertain corrections, including date-format changes, require human review.
+
+In mock mode, the function returns a manual-review response without calling Gemini. Live Gemini behavior requires separate integration testing.
+
+The module does not access the backend or database, send messages, execute retries, or submit corrected payloads.
+
+### Testing
+
+Run the payload fixer tests:
+
+```bash
+python -m pytest ai/evals/test_payload_fixer.py -v
+```
+
+Run the complete AI evaluation suite:
+
+```bash
+python -m pytest ai/evals/ -q
+```
+
+The tests cover type conversions, missing fields, nested arrays, uncertain dates, blocked retry categories, retry-parameter validation, and API failure handling.
+
+Latest local test result: 184 passed.
