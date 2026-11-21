@@ -404,3 +404,8 @@ Colors, score bands, and radii are defined in `src/styles/tokens.css`:
 - The **Confirm & Deduct Credits** button is disabled, with a clear `role="alert"` reason, when the estimated cost exceeds the remaining daily or monthly budget, when no records are selected, or when the provider is unsupported. The same guard is repeated inside the click handler.
 - The component makes no API calls itself. The parent should start enrichment only from `onConfirm`; Escape, the X button, the backdrop and Cancel only call `onClose`.
 - Props: `isOpen`, `onClose`, `onConfirm`, `provider`, `selectedRecords` or `selectedCount`, `estimatedCredits`, `remainingDailyCredits`, `remainingMonthlyCredits`.
+
+### FE-33: Frontend Component Tests (Vitest)
+- **Files**: `src/pages/Login/__tests__/Login.test.jsx`, `src/pages/EnrichmentQueue/__tests__/EnrichmentQueue.test.jsx`, `src/pages/EnrichmentQueue/__tests__/History.test.jsx`, `src/pages/CampaignManager/__tests__/Controls.test.jsx`, `src/pages/LeadPipeline/__tests__/LeadTable.test.jsx`.
+- Added Vitest + React Testing Library component test suites using mocked data/services (`vi.mock`) covering loading, populated render, empty, error, and primary interaction states.
+- Verified locally with `npm test` (15 files / 94 tests passing), `npm run lint` (`--max-warnings 0`), and `npm run build`.
