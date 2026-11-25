@@ -34,9 +34,15 @@ export default function KitchenSinkPage() {
         <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '16px' }}>Form Controls</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
           <Input label="Search Leads" placeholder="Search by title or company..." />
-          <Input label="Email Input with Error" defaultValue="invalid-email" error="Please enter a valid email address" />
+          <Input
+            label="Email Input with Error"
+            aria-label="Email Input with Error"
+            defaultValue="invalid-email"
+            error="Please enter a valid email address"
+          />
           <Select
             label="Filter by Source"
+            aria-label="Filter by Source"
             options={[
               { value: 'all', label: 'All Sources' },
               { value: 'internshala', label: 'Internshala' },

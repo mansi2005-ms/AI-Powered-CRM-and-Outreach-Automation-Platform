@@ -405,6 +405,74 @@ Colors, score bands, and radii are defined in `src/styles/tokens.css`:
 - The component makes no API calls itself. The parent should start enrichment only from `onConfirm`; Escape, the X button, the backdrop and Cancel only call `onClose`.
 - Props: `isOpen`, `onClose`, `onConfirm`, `provider`, `selectedRecords` or `selectedCount`, `estimatedCredits`, `remainingDailyCredits`, `remainingMonthlyCredits`.
 
+
+
+## FE-32 – Accessibility and Responsive Audit Pass
+
+### Objective
+
+Perform accessibility and responsive testing across the AI CRM frontend using Axe DevTools, Google Lighthouse and manual keyboard testing.
+
+The audit covers mobile (360px), tablet (768px) and desktop (1280px) viewport widths.
+
+The primary acceptance criterion is zero critical Axe accessibility violations.
+
+### Accessibility Fixes Implemented
+
+- **Login Page:** Added a semantic `<main>` landmark to the Login page. The `/login` route bypasses the shared `MainLayout` wrapper, so the Login page provides its own main landmark. Verified that exactly one main landmark is rendered with no nested main landmarks.
+- **Lead Pipeline:** Added accessible names to dropdown filters using ARIA labels.
+- **Global Styles:** Improved visible keyboard focus indicators.
+- **Enrichment Queue:** Improved table-header text contrast to meet accessibility requirements.
+- **Enrichment History:** Added keyboard accessibility to the scrollable table region.
+- **Design Tokens:** Updated `--color-text-light` from `#94a3b8` to `#64748b` in `frontend/src/styles/tokens.css` to improve text contrast.
+- **UI Kitchen Sink:** Added accessible names to the Email Input with Error and Filter by Source controls using `aria-label` attributes in `frontend/src/pages/_Kitchen/index.jsx`.
+
+### Accessibility Audit Results
+
+- **Axe DevTools:** Final scans reported zero accessibility violations across the audited CRM tabs.
+- **Google Lighthouse:** Final Accessibility scores were reported as 100/100 across the audited CRM tabs.
+- **Keyboard Accessibility:** Focus visibility and keyboard-operable controls were reviewed during testing.
+
+Automated accessibility scores do not guarantee complete accessibility. Manual testing remains necessary.
+
+### Responsive Testing
+
+The following viewport widths were used:
+
+- **Mobile:** 360px
+- **Tablet:** 768px
+- **Desktop:** 1280px
+
+Responsive checks included page layout, navigation, forms, tables, buttons and horizontal scrolling.
+
+### Known Limitations
+
+- A fixed-width sidebar was observed restricting the available content area on mobile screens.
+- Changes to the shared sidebar and related layout components were not made, following the team lead's instructions.
+- Some backend requests failed during testing, and available offline fixture data was used for certain screens.
+
+### Frontend Test Verification
+
+**Lint Verification**
+- Command: `npm run lint`
+- Tool: ESLint
+- Result: Passed with no reported errors or warnings.
+
+**Automated Unit Tests**
+- Command: `npm run test`
+- Tool: Vitest v1.6.1
+- Test files: 16 passed
+- Individual tests: 134 passed
+- Failed tests: 0
+
+### Conclusion
+
+The final automated accessibility scans reported zero Axe violations and Lighthouse Accessibility scores of 100/100 across the audited CRM tabs.
+
+Frontend linting and all 134 automated tests passed after syncing with the latest main branch.
+
+
+
 ### FE-31: Admin Source Registry & Budget Configuration
 - **Component**: `frontend/src/pages/Admin/Sources.jsx` (tests in `frontend/src/pages/Admin/Sources.test.jsx`).
 - **Route**: `/admin/sources` (with admin navigation card at `/admin`).
@@ -428,3 +496,4 @@ Colors, score bands, and radii are defined in `src/styles/tokens.css`:
 - **Files**: `src/pages/Login/__tests__/Login.test.jsx`, `src/pages/EnrichmentQueue/__tests__/EnrichmentQueue.test.jsx`, `src/pages/EnrichmentQueue/__tests__/History.test.jsx`, `src/pages/CampaignManager/__tests__/Controls.test.jsx`, `src/pages/LeadPipeline/__tests__/LeadTable.test.jsx`.
 - Added Vitest + React Testing Library component test suites using mocked data/services (`vi.mock`) covering loading, populated render, empty, error, and primary interaction states.
 - Verified locally with `npm test`, `npm run lint` (`--max-warnings 0`), and `npm run build`.
+

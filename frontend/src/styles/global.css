@@ -33,3 +33,9 @@ button {
 input, select, textarea {
   font-family: inherit;
 }
+
+/* FE-32: Visible keyboard focus for dropdown controls */
+select:focus-visible {
+    outline: 3px solid var(--color-primary) !important;
+    outline-offset: 2px;
+}

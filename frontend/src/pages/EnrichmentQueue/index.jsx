@@ -35,7 +35,7 @@ const PAGE_CSS = `
 }
 .eq-table { width: 100%; min-width: 900px; border-collapse: collapse; text-align: left; font-size: 14px; }
 .eq-table thead { background: var(--color-bg-subtle); border-bottom: 1px solid var(--color-border); }
-.eq-th { padding: 12px 16px; font-weight: 600; color: var(--color-text-muted); white-space: nowrap; }
+.eq-th { padding: 12px 16px; font-weight: 600; color: var(--color-text-main); white-space: nowrap; }
 .eq-th-check, .eq-td-check { width: 44px; padding: 12px 8px 12px 16px; }
 .eq-row { border-bottom: 1px solid var(--color-border); }
 .eq-row:last-child { border-bottom: none; }

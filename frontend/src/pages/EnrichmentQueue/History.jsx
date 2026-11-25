@@ -49,7 +49,12 @@ export default function History() {
         </div>
       ) : (
         <>
-          <div className={styles.tableWrapper}>
+          <div
+            className={styles.tableWrapper}
+            tabIndex={0}
+            role="region"
+            aria-label="Enrichment history table"
+          >
             <table className={styles.table}>
               <thead>
                 <tr>

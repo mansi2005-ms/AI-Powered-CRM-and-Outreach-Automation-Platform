@@ -41,7 +41,7 @@ export default function LoginPage({ onLoginSuccess }) {
   }
 
   return (
-    <div
+    <main
       style={{
         display: 'flex',
         minHeight: '100vh',
@@ -115,6 +115,6 @@ export default function LoginPage({ onLoginSuccess }) {
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

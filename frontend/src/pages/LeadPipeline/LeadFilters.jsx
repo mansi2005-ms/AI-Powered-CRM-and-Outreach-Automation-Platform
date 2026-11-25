@@ -130,6 +130,7 @@ export function LeadFilters({
                 <div style={{ flex: '1 1 180px' }}>
                     <Select
                         label="Score band"
+                        aria-label="Score band"
                         value={filters.scoreBand}
                         onChange={(event) => updateFilter('scoreBand', event.target.value)}
                         options={SCORE_OPTIONS}
@@ -139,6 +140,7 @@ export function LeadFilters({
                 <div style={{ flex: '1 1 180px' }}>
                     <Select
                         label="Contact status"
+                        aria-label="Contact status"
                         value={filters.status}
                         onChange={(event) => updateFilter('status', event.target.value)}
                         options={STATUS_OPTIONS}
@@ -148,6 +150,7 @@ export function LeadFilters({
                 <div style={{ flex: '1 1 180px' }}>
                     <Select
                         label="Assigned user"
+                        aria-label="Assigned user"
                         value={filters.assignedTo}
                         onChange={(event) => updateFilter('assignedTo', event.target.value)}
                         options={[
