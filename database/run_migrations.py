@@ -19,6 +19,40 @@ def compute_checksum(content: str) -> str:
     """Compute SHA-256 checksum of SQL file content."""
     return hashlib.sha256(content.strip().encode("utf-8")).hexdigest()
 
+
+def strip_transaction_wrappers(content: str) -> str:
+    """Remove outer SQL transactions so the runner can manage them."""
+    lines = content.splitlines()
+    begin_index = next(
+        (
+            index
+            for index, line in enumerate(lines)
+            if line.strip().upper() in {"BEGIN", "BEGIN;"}
+        ),
+        None,
+    )
+    commit_index = next(
+        (
+            index
+            for index in range(len(lines) - 1, -1, -1)
+            if lines[index].strip().upper() in {"COMMIT", "COMMIT;"}
+        ),
+        None,
+    )
+
+    if begin_index is None and commit_index is None:
+        return content
+    if begin_index is None or commit_index is None or begin_index >= commit_index:
+        raise ValueError("SQL file has an incomplete outer transaction wrapper")
+
+    unwrapped_lines = (
+        lines[:begin_index]
+        + lines[begin_index + 1:commit_index]
+        + lines[commit_index + 1:]
+    )
+    return "\n".join(unwrapped_lines)
+
+
 def ensure_migration_table(conn):
     """Ensures schema_migrations table exists."""
     with conn.cursor() as cur:
@@ -81,7 +115,7 @@ def run_migrations(database_url: str, dry_run: bool = False, run_seed: bool = Fa
                     print(f"  Applying {version}...", end="", flush=True)
                     with conn.transaction():
                         with conn.cursor() as cur:
-                            cur.execute(content)
+                            cur.execute(strip_transaction_wrappers(content))
                             cur.execute(
                                 "INSERT INTO schema_migrations (version, checksum) VALUES (%s, %s);",
                                 (version, checksum)
@@ -99,7 +133,7 @@ def run_migrations(database_url: str, dry_run: bool = False, run_seed: bool = Fa
                         content = seed_path.read_text(encoding="utf-8")
                         with conn.transaction():
                             with conn.cursor() as cur:
-                                cur.execute(content)
+                                cur.execute(strip_transaction_wrappers(content))
                     print(" DONE")
 
     except Exception as e:

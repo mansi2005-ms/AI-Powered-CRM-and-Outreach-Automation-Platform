@@ -989,8 +989,14 @@
 - Any subsequent edit invalidates the approval.
 
 #### Acceptance Criteria
-- [ ] Editing draft content after approval invalidates approval record.
-- [ ] Only users with `campaign_manager` or `admin` role can approve.
+- [x] Editing draft content after approval invalidates approval record.
+- [x] Only users with `campaign_manager` or `admin` role can approve.
+
+#### Implementation Summary
+- Campaign Manager and Admin users can approve or reject campaign drafts.
+- Approved recipient, subject, and body are locked with a SHA-256 `content_hash`.
+- Editing an approved draft revokes its active approval and changes the draft status to `needs_review`.
+- `backend/tests/test_campaign_approval.py` covers role restrictions, content hashing, and approval invalidation.
 
 ---
 

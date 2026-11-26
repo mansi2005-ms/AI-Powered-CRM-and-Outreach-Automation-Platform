@@ -65,10 +65,10 @@ INSERT INTO contacts (id, organization_id, name, role_title) VALUES
 ON CONFLICT DO NOTHING;
 
 INSERT INTO contact_methods (id, contact_id, kind, value, provenance, verified_status, verified_at) VALUES
-    ('m0000001-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000001', 'email', 'sjenkins@acmeai.example.com', 'Official careers portal', 'deliverable', NOW() AT TIME ZONE 'UTC'),
-    ('m0000002-0000-0000-0000-000000000002', 'c0000002-0000-0000-0000-000000000002', 'email', 'marcus@betacloud.example.com', 'ContactOut lookup', 'deliverable', NOW() AT TIME ZONE 'UTC'),
-    ('m0000003-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000003', 'email', 'priya.s@gammadata.example.com', 'Snov.io lookup', 'catch_all', NOW() AT TIME ZONE 'UTC'),
-    ('m0000005-0000-0000-0000-000000000005', 'c0000005-0000-0000-0000-000000000005', 'email', 'tpo@nei.example.edu', 'Institute public portal', 'deliverable', NOW() AT TIME ZONE 'UTC')
+    ('e0000001-0000-0000-0000-000000000001', 'c0000001-0000-0000-0000-000000000001', 'email', 'sjenkins@acmeai.example.com', 'Official careers portal', 'deliverable', NOW() AT TIME ZONE 'UTC'),
+    ('e0000002-0000-0000-0000-000000000002', 'c0000002-0000-0000-0000-000000000002', 'email', 'marcus@betacloud.example.com', 'ContactOut lookup', 'deliverable', NOW() AT TIME ZONE 'UTC'),
+    ('e0000003-0000-0000-0000-000000000003', 'c0000003-0000-0000-0000-000000000003', 'email', 'priya.s@gammadata.example.com', 'Snov.io lookup', 'catch_all', NOW() AT TIME ZONE 'UTC'),
+    ('e0000005-0000-0000-0000-000000000005', 'c0000005-0000-0000-0000-000000000005', 'email', 'tpo@nei.example.edu', 'Institute public portal', 'deliverable', NOW() AT TIME ZONE 'UTC')
 ON CONFLICT DO NOTHING;
 
 -- 5. Insert Sample Opportunities
@@ -130,8 +130,8 @@ ON CONFLICT DO NOTHING;
 
 -- 8. Insert Suppression Demo Entry
 INSERT INTO suppression_entries (id, value, kind, reason, source, created_by) VALUES
-    ('s0000001-0000-0000-0000-000000000001', 'blocked-company.example.com', 'domain', 'Organization requested no cold contact', 'manual', '11111111-1111-1111-1111-111111111111'),
-    ('s0000002-0000-0000-0000-000000000002', 'optout@example.com', 'email', 'Recipient unsubscribed', 'unsubscribe', '11111111-1111-1111-1111-111111111111')
+    ('f0000001-0000-0000-0000-000000000001', 'blocked-company.example.com', 'domain', 'Organization requested no cold contact', 'manual', '11111111-1111-1111-1111-111111111111'),
+    ('f0000002-0000-0000-0000-000000000002', 'optout@example.com', 'email', 'Recipient unsubscribed', 'unsubscribe', '11111111-1111-1111-1111-111111111111')
 ON CONFLICT DO NOTHING;
 
 COMMIT;
